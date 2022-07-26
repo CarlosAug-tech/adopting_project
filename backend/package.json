@@ -24,5 +24,8 @@
   },
   "scripts": {
     "test": "jest"
+  },
+  "dependencies": {
+    "ts-jest": "^28.0.7"
   }
 }
