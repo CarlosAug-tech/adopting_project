@@ -37,6 +37,18 @@ describe('Create User UseCase', () => {
         await expect(sut.execute(user)).rejects.toThrow();
     });
 
+    it('should not be able to create a new User, if confirmPassword is not provided', async () => {
+        const sut = new CreateUserUseCase();
+        const user = {
+            name: 'any_name',
+            email: 'any_email@email.com',
+            password: 'any_password',
+            confirmPassword: '',
+        };
+
+        await expect(sut.execute(user)).rejects.toThrow();
+    });
+
     it('should be able to create a new User', async () => {
         const sut = new CreateUserUseCase();
         const user = {
