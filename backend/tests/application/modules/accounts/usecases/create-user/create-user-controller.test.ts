@@ -1,7 +1,22 @@
 import { app } from '@infra/http/app';
 import request from 'supertest';
+import { Connection } from 'typeorm';
+
+import createConnection from '@infra/database/typeorm/';
+
+let connection: Connection;
 
 describe('Create User Controller', () => {
+    beforeAll(async () => {
+        connection = await createConnection();
+        await connection.runMigrations();
+    });
+
+    afterAll(async () => {
+        await connection.dropDatabase();
+        await connection.close();
+    });
+
     it('should be able to create a new User and return 201 (CREATED)', async () => {
         const user = {
             name: 'any_name',
