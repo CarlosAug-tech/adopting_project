@@ -36,10 +36,24 @@ const makeUsersRepositoryStub = (): IUsersRepository => {
     return new UsersRepositoryStub();
 };
 
+interface ISutTypes {
+    usersRepositoryStub: IUsersRepository;
+    sut: CreateUserUseCase;
+}
+
+const makeSut = (): ISutTypes => {
+    const usersRepositoryStub = makeUsersRepositoryStub();
+    const sut = new CreateUserUseCase(usersRepositoryStub);
+
+    return {
+        sut,
+        usersRepositoryStub,
+    };
+};
+
 describe('Create User UseCase', () => {
     it('should not be able to create a new User, if name is not provided', async () => {
-        const usersRepositoryStub = makeUsersRepositoryStub();
-        const sut = new CreateUserUseCase(usersRepositoryStub);
+        const { sut, usersRepositoryStub } = makeSut();
         jest.spyOn(usersRepositoryStub, 'findByEmail').mockReturnValueOnce(
             undefined,
         );
@@ -54,8 +68,7 @@ describe('Create User UseCase', () => {
     });
 
     it('should not be able to create a new User, if email is not provided', async () => {
-        const usersRepositoryStub = makeUsersRepositoryStub();
-        const sut = new CreateUserUseCase(usersRepositoryStub);
+        const { sut, usersRepositoryStub } = makeSut();
         jest.spyOn(usersRepositoryStub, 'findByEmail').mockReturnValueOnce(
             undefined,
         );
@@ -70,8 +83,7 @@ describe('Create User UseCase', () => {
     });
 
     it('should not be able to create a new User, if password is not provided', async () => {
-        const usersRepositoryStub = makeUsersRepositoryStub();
-        const sut = new CreateUserUseCase(usersRepositoryStub);
+        const { sut, usersRepositoryStub } = makeSut();
         jest.spyOn(usersRepositoryStub, 'findByEmail').mockReturnValueOnce(
             undefined,
         );
@@ -86,8 +98,7 @@ describe('Create User UseCase', () => {
     });
 
     it('should not be able to create a new User, if confirmPassword is not provided', async () => {
-        const usersRepositoryStub = makeUsersRepositoryStub();
-        const sut = new CreateUserUseCase(usersRepositoryStub);
+        const { sut, usersRepositoryStub } = makeSut();
         jest.spyOn(usersRepositoryStub, 'findByEmail').mockReturnValueOnce(
             undefined,
         );
@@ -102,8 +113,7 @@ describe('Create User UseCase', () => {
     });
 
     it('should not be able to create a new User, if email already exists', async () => {
-        const usersRepositoryStub = makeUsersRepositoryStub();
-        const sut = new CreateUserUseCase(usersRepositoryStub);
+        const { sut } = makeSut();
         const user = {
             name: 'any_name',
             email: 'any_email@email.com',
@@ -115,8 +125,7 @@ describe('Create User UseCase', () => {
     });
 
     it('should be able to create a new User', async () => {
-        const usersRepositoryStub = makeUsersRepositoryStub();
-        const sut = new CreateUserUseCase(usersRepositoryStub);
+        const { sut, usersRepositoryStub } = makeSut();
         jest.spyOn(usersRepositoryStub, 'findByEmail').mockReturnValueOnce(
             undefined,
         );
