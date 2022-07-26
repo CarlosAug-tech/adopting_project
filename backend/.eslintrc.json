@@ -27,6 +27,7 @@
         "no-useless-constructor": "off",
         "no-unused-vars": "off",
         "no-empty-function": "off",
-        "camelcase": "off"
+        "camelcase": "off",
+        "no-promise-executor-return": "off"
     }
 }
