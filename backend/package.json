@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules --respawn ./src/infra/http/server.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli",
-    "test": "jest"
+    "test": "set NODE_ENV=test&&jest --runInBand --detectOpenHandles --no-cache"
   },
   "dependencies": {
     "express": "^4.18.1",

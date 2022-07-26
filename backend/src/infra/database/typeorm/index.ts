@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Connection, createConnection, getConnectionOptions } from 'typeorm';
 
 export default async (): Promise<Connection> => {
@@ -6,7 +7,7 @@ export default async (): Promise<Connection> => {
     return createConnection(
         Object.assign(defaultOptions, {
             database:
-                process.env.NODE === 'test'
+                process.env.NODE_ENV === 'test'
                     ? 'db_adopting_test'
                     : 'db_adopting',
         }),
