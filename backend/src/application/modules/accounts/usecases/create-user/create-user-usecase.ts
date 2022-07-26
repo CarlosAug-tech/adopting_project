@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import { inject, injectable } from 'tsyringe';
 import {
     ICreateUserRequestDTO,
     ICreateUserResponseDTO,
@@ -8,8 +10,12 @@ interface IRequest extends ICreateUserRequestDTO {
     confirmPassword: string;
 }
 
+@injectable()
 class CreateUserUseCase {
-    constructor(private usersRepository: IUsersRepository) {}
+    constructor(
+        @inject('UsersRepository')
+        private usersRepository: IUsersRepository,
+    ) {}
 
     async execute(data: IRequest): Promise<ICreateUserResponseDTO> {
         const { name, email, password, confirmPassword } = data;
