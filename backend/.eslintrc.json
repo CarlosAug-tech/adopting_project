@@ -18,6 +18,16 @@
         "prettier"
     ],
     "rules": {
-        "prettier/prettier": "error"
+        "prettier/prettier": "error",
+        "import/prefer-default-export": "off",
+        "class-methods-use-this": "off",
+        "import/no-unresolved": "off",
+        "import/extensions": "off",
+        "no-restricted-syntax": "off",
+        "no-useless-constructor": "off",
+        "no-unused-vars": "off",
+        "no-empty-function": "off",
+        "camelcase": "off",
+        "no-promise-executor-return": "off"
     }
 }
