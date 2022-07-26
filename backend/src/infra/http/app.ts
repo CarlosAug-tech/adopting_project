@@ -5,6 +5,7 @@ import express from 'express';
 import { routes } from './routes';
 
 import createConnection from '../database/typeorm';
+import '../container';
 
 createConnection();
 
