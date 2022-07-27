@@ -2,8 +2,11 @@ import {
     IAuthenticationUserRequestDTO,
     IAuthenticationUserResponseDTO,
 } from '../../dtos/authentication-user-dtos';
+import { IUsersRepository } from '../../repositories/users-repository';
 
 class AuthenticationUserUseCase {
+    constructor(private usersRepository: IUsersRepository) {}
+
     async execute(
         data: IAuthenticationUserRequestDTO,
     ): Promise<IAuthenticationUserResponseDTO> {
@@ -14,6 +17,12 @@ class AuthenticationUserUseCase {
             if (!data[field]) {
                 throw new Error('This is field is required!');
             }
+        }
+
+        const user = await this.usersRepository.findByEmail(email);
+
+        if (!user) {
+            throw new Error('Email or password invalid!');
         }
 
         return {
