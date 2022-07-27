@@ -1,6 +1,7 @@
-import { AppError } from '@infra/shared/utils/app-error';
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
+
+import { AppError } from '@infra/shared/utils/app-error';
 
 interface IPayload {
     sub: string;
@@ -28,6 +29,6 @@ export default async (
 
         next();
     } catch (err) {
-        throw new AppError('Token is invalid!');
+        throw new AppError('Token is invalid!', 401);
     }
 };
