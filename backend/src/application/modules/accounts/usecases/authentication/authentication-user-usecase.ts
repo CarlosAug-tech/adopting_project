@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { sign } from 'jsonwebtoken';
 import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
 import { inject, injectable } from 'tsyringe';
+import { UseCase } from '@application/contracts/usecase';
 import {
     IAuthenticationUserRequestDTO,
     IAuthenticationUserResponseDTO,
@@ -9,26 +10,21 @@ import {
 import { IUsersRepository } from '../../repositories/users-repository';
 
 @injectable()
-class AuthenticationUserUseCase {
+class AuthenticationUserUseCase extends UseCase {
     constructor(
         @inject('UsersRepository')
         private usersRepository: IUsersRepository,
         @inject('BcryptProvider')
         private bcryptProvider: IEncryptProvider,
-    ) {}
+    ) {
+        super();
+    }
 
-    async execute(
+    async perform(
         data: IAuthenticationUserRequestDTO,
     ): Promise<IAuthenticationUserResponseDTO> {
         const { email, password } = data;
-        const requiredFields = ['email', 'password'];
         const tokenSecret = 'any_secret_token';
-
-        for (const field of requiredFields) {
-            if (!data[field]) {
-                throw new Error('This is field is required!');
-            }
-        }
 
         const user = await this.usersRepository.findByEmail(email);
 
