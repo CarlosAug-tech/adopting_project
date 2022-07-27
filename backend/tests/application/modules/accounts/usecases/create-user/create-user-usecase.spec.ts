@@ -1,55 +1,11 @@
-import {
-    ICreateUserRequestDTO,
-    ICreateUserResponseDTO,
-} from '@application/modules/accounts/dtos/create-user-dtos';
 import { IUsersRepository } from '@application/modules/accounts/repositories/users-repository';
 import { CreateUserUseCase } from '@application/modules/accounts/usecases/create-user/create-user-usecase';
 import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
-import { IUser } from '@domain/entities/user';
-
-const makeUsersRepositoryStub = (): IUsersRepository => {
-    class UsersRepositoryStub implements IUsersRepository {
-        create(data: ICreateUserRequestDTO): Promise<ICreateUserResponseDTO> {
-            const user = {
-                id: 'any_id',
-                name: 'any_name',
-                email: 'any_email@email.com',
-                password: 'any_password',
-                created_at: new Date(),
-            };
-
-            return new Promise(resolve => resolve(user));
-        }
-
-        findByEmail(email: string): Promise<IUser> {
-            const user = {
-                id: 'any_id',
-                name: 'any_name',
-                email: 'any_email@email.com',
-                password: 'any_password',
-                created_at: new Date(),
-            };
-
-            return new Promise(resolve => resolve(user));
-        }
-    }
-
-    return new UsersRepositoryStub();
-};
-
-const makeBcryptProviderStub = (): IEncryptProvider => {
-    class BcryptProviderStub implements IEncryptProvider {
-        hash(password: string, hashSalt: number): Promise<string> {
-            return new Promise(resolve => resolve('any_password_hashed'));
-        }
-
-        compare(password: string, password_hash: string): Promise<boolean> {
-            throw new Error('Method not implemented.');
-        }
-    }
-
-    return new BcryptProviderStub();
-};
+import { AppError } from '@infra/shared/utils/app-error';
+import {
+    makeBcryptProviderStub,
+    makeUsersRepositoryStub,
+} from '../../__mocks__/users-repository-mocks';
 
 interface ISutTypes {
     usersRepositoryStub: IUsersRepository;
@@ -82,7 +38,9 @@ describe('Create User UseCase', () => {
             confirmPassword: 'any_password',
         };
 
-        await expect(sut.execute(user)).rejects.toThrow();
+        await expect(sut.execute(user)).rejects.toEqual(
+            new AppError('This field is required!'),
+        );
     });
 
     it('should not be able to create a new User, if email is not provided', async () => {
@@ -97,7 +55,9 @@ describe('Create User UseCase', () => {
             confirmPassword: 'any_password',
         };
 
-        await expect(sut.execute(user)).rejects.toThrow();
+        await expect(sut.execute(user)).rejects.toEqual(
+            new AppError('This field is required!'),
+        );
     });
 
     it('should not be able to create a new User, if password is not provided', async () => {
@@ -112,7 +72,9 @@ describe('Create User UseCase', () => {
             confirmPassword: 'any_password',
         };
 
-        await expect(sut.execute(user)).rejects.toThrow();
+        await expect(sut.execute(user)).rejects.toEqual(
+            new AppError('This field is required!'),
+        );
     });
 
     it('should not be able to create a new User, if confirmPassword is not provided', async () => {
@@ -127,7 +89,9 @@ describe('Create User UseCase', () => {
             confirmPassword: '',
         };
 
-        await expect(sut.execute(user)).rejects.toThrow();
+        await expect(sut.execute(user)).rejects.toEqual(
+            new AppError('This field is required!'),
+        );
     });
 
     it('should not be able to create a new User, if email already exists', async () => {
@@ -139,7 +103,9 @@ describe('Create User UseCase', () => {
             confirmPassword: 'any_password',
         };
 
-        await expect(sut.execute(user)).rejects.toThrow();
+        await expect(sut.execute(user)).rejects.toEqual(
+            new AppError('User already exists'),
+        );
     });
 
     it('should not be able to create a new User, if confirmPassword does not match with password', async () => {
@@ -154,7 +120,9 @@ describe('Create User UseCase', () => {
             confirmPassword: 'any_password_invalid',
         };
 
-        await expect(sut.execute(user)).rejects.toThrow();
+        await expect(sut.execute(user)).rejects.toEqual(
+            new AppError('Passwords does not match!'),
+        );
     });
 
     it('should be able to create a new User', async () => {

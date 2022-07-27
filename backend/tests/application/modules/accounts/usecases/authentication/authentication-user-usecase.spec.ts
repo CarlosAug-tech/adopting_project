@@ -1,47 +1,11 @@
-import {
-    ICreateUserRequestDTO,
-    ICreateUserResponseDTO,
-} from '@application/modules/accounts/dtos/create-user-dtos';
 import { IUsersRepository } from '@application/modules/accounts/repositories/users-repository';
 import { AuthenticationUserUseCase } from '@application/modules/accounts/usecases/authentication/authentication-user-usecase';
 import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
-import { IUser } from '@domain/entities/user';
-
-const makeUsersRepositoryStub = (): IUsersRepository => {
-    class UsersRepositoryStub implements IUsersRepository {
-        create(data: ICreateUserRequestDTO): Promise<ICreateUserResponseDTO> {
-            throw new Error('Method not implemented.');
-        }
-
-        findByEmail(email: string): Promise<IUser> {
-            const user = {
-                id: 'any_id',
-                name: 'any_name',
-                email: 'any_email@email.com',
-                password: 'any_password_hashed',
-                created_at: new Date(),
-            };
-
-            return new Promise(resolve => resolve(user));
-        }
-    }
-
-    return new UsersRepositoryStub();
-};
-
-const makeBcryptProviderStub = (): IEncryptProvider => {
-    class BcryptProviderStub implements IEncryptProvider {
-        hash(password: string, hashSalt: number): Promise<string> {
-            throw new Error('Method not implemented.');
-        }
-
-        compare(password: string, password_hash: string): Promise<boolean> {
-            return new Promise(resolve => resolve(true));
-        }
-    }
-
-    return new BcryptProviderStub();
-};
+import { AppError } from '@infra/shared/utils/app-error';
+import {
+    makeBcryptProviderStub,
+    makeUsersRepositoryStub,
+} from '../../__mocks__/users-repository-mocks';
 
 interface ISutTypes {
     usersRepositoryStub: IUsersRepository;
@@ -72,7 +36,9 @@ describe('Authentication User UseCase', () => {
             password: 'any_password',
         };
 
-        await expect(sut.execute(credentials)).rejects.toThrow();
+        await expect(sut.execute(credentials)).rejects.toEqual(
+            new AppError('This field is required!'),
+        );
     });
 
     it('should not be able to authenticate a user, if password is not provided', async () => {
@@ -82,7 +48,9 @@ describe('Authentication User UseCase', () => {
             password: '',
         };
 
-        await expect(sut.execute(credentials)).rejects.toThrow();
+        await expect(sut.execute(credentials)).rejects.toEqual(
+            new AppError('This field is required!'),
+        );
     });
 
     it('should not be able to authenticate user, if email is not exists', async () => {
@@ -95,18 +63,15 @@ describe('Authentication User UseCase', () => {
             password: 'any_password',
         };
 
-        await expect(sut.execute(credentials)).rejects.toThrow();
+        await expect(sut.execute(credentials)).rejects.toEqual(
+            new AppError('Email or password invalid!'),
+        );
     });
 
     it('should not be able to authenticate a user, if password is invalid', async () => {
-        const usersRepositoryStub = makeUsersRepositoryStub();
-        const bcryptProviderStub = makeBcryptProviderStub();
+        const { sut, bcryptProviderStub } = makeSut();
         jest.spyOn(bcryptProviderStub, 'compare').mockReturnValueOnce(
             new Promise(resolve => resolve(false)),
-        );
-        const sut = new AuthenticationUserUseCase(
-            usersRepositoryStub,
-            bcryptProviderStub,
         );
 
         const credentials = {
@@ -114,7 +79,9 @@ describe('Authentication User UseCase', () => {
             password: 'any_password_invalid',
         };
 
-        await expect(sut.execute(credentials)).rejects.toThrow();
+        await expect(sut.execute(credentials)).rejects.toEqual(
+            new AppError('Email or password invalid!'),
+        );
     });
 
     it('should be able to authenticate a user', async () => {
