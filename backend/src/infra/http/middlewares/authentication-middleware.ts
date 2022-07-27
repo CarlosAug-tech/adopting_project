@@ -1,3 +1,4 @@
+import { AppError } from '@infra/shared/utils/app-error';
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 
@@ -13,7 +14,7 @@ export default async (
     const authHeader = request.headers.authorization;
 
     if (!authHeader) {
-        throw new Error('Token is not provided');
+        throw new AppError('Token is not provided', 403);
     }
 
     const [, token] = authHeader.split(' ');
@@ -27,6 +28,6 @@ export default async (
 
         next();
     } catch (err) {
-        throw new Error('Token is invalid!');
+        throw new AppError('Token is invalid!');
     }
 };
