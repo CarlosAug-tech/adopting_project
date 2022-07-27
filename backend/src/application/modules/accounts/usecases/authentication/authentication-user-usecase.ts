@@ -3,6 +3,7 @@ import { sign } from 'jsonwebtoken';
 import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
 import { inject, injectable } from 'tsyringe';
 import { UseCase } from '@application/contracts/usecase';
+import { AppError } from '@infra/shared/utils/app-error';
 import {
     IAuthenticationUserRequestDTO,
     IAuthenticationUserResponseDTO,
@@ -29,7 +30,7 @@ class AuthenticationUserUseCase extends UseCase {
         const user = await this.usersRepository.findByEmail(email);
 
         if (!user) {
-            throw new Error('Email or password invalid!');
+            throw new AppError('Email or password invalid!');
         }
 
         const passwordIsMatch = await this.bcryptProvider.compare(
@@ -38,7 +39,7 @@ class AuthenticationUserUseCase extends UseCase {
         );
 
         if (!passwordIsMatch) {
-            throw new Error('Email or password invalid!');
+            throw new AppError('Email or password invalid!');
         }
 
         const { id, name } = user;

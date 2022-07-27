@@ -1,3 +1,5 @@
+import { AppError } from '@infra/shared/utils/app-error';
+
 abstract class UseCase<TRequest = any, TResponse = any> {
     abstract perform(data?: TRequest): Promise<TResponse>;
 
@@ -17,7 +19,7 @@ abstract class UseCase<TRequest = any, TResponse = any> {
     private validateRequiredFields(data: any, fields: string[]) {
         for (const field of fields) {
             if (!data[field]) {
-                throw new Error('This is field required!');
+                throw new AppError('This field is required!');
             }
         }
     }

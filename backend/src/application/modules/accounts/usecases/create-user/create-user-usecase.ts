@@ -1,5 +1,6 @@
 import { UseCase } from '@application/contracts/usecase';
 import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
+import { AppError } from '@infra/shared/utils/app-error';
 import 'reflect-metadata';
 import { inject, injectable } from 'tsyringe';
 import {
@@ -30,11 +31,11 @@ class CreateUserUseCase extends UseCase {
         const userExists = await this.usersRepository.findByEmail(email);
 
         if (userExists) {
-            throw new Error('User already exists');
+            throw new AppError('User already exists');
         }
 
         if (password !== confirmPassword) {
-            throw new Error('Passwords does not match!');
+            throw new AppError('Passwords does not match!');
         }
 
         const passwordHash = await this.bcryptProvider.hash(password, hashSalt);
