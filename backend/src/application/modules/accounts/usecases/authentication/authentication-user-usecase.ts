@@ -1,3 +1,4 @@
+import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
 import {
     IAuthenticationUserRequestDTO,
     IAuthenticationUserResponseDTO,
@@ -5,7 +6,10 @@ import {
 import { IUsersRepository } from '../../repositories/users-repository';
 
 class AuthenticationUserUseCase {
-    constructor(private usersRepository: IUsersRepository) {}
+    constructor(
+        private usersRepository: IUsersRepository,
+        private bcryptProvider: IEncryptProvider,
+    ) {}
 
     async execute(
         data: IAuthenticationUserRequestDTO,
@@ -22,6 +26,15 @@ class AuthenticationUserUseCase {
         const user = await this.usersRepository.findByEmail(email);
 
         if (!user) {
+            throw new Error('Email or password invalid!');
+        }
+
+        const passwordIsMatch = await this.bcryptProvider.compare(
+            password,
+            user.password,
+        );
+
+        if (!passwordIsMatch) {
             throw new Error('Email or password invalid!');
         }
 
