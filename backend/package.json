@@ -5,17 +5,28 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules --respawn ./src/infra/http/server.ts",
-    "test": "jest"
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli",
+    "test": "set NODE_ENV=test&&jest --runInBand --detectOpenHandles --no-cache"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.18.1",
-    "ts-jest": "^28.0.7"
+    "pg": "^8.7.3",
+    "reflect-metadata": "^0.1.13",
+    "supertest": "^6.2.4",
+    "ts-jest": "^28.0.7",
+    "tsyringe": "^4.7.0",
+    "typeorm": "0.2.45",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.13",
     "@types/jest": "^28.1.6",
     "@types/node": "^18.6.1",
+    "@types/supertest": "^2.0.12",
     "@types/typescript": "^2.0.0",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
     "babel-eslint": "^10.1.0",
