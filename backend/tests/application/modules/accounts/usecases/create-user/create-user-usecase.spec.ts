@@ -1,55 +1,10 @@
-import {
-    ICreateUserRequestDTO,
-    ICreateUserResponseDTO,
-} from '@application/modules/accounts/dtos/create-user-dtos';
 import { IUsersRepository } from '@application/modules/accounts/repositories/users-repository';
 import { CreateUserUseCase } from '@application/modules/accounts/usecases/create-user/create-user-usecase';
 import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
-import { IUser } from '@domain/entities/user';
-
-const makeUsersRepositoryStub = (): IUsersRepository => {
-    class UsersRepositoryStub implements IUsersRepository {
-        create(data: ICreateUserRequestDTO): Promise<ICreateUserResponseDTO> {
-            const user = {
-                id: 'any_id',
-                name: 'any_name',
-                email: 'any_email@email.com',
-                password: 'any_password',
-                created_at: new Date(),
-            };
-
-            return new Promise(resolve => resolve(user));
-        }
-
-        findByEmail(email: string): Promise<IUser> {
-            const user = {
-                id: 'any_id',
-                name: 'any_name',
-                email: 'any_email@email.com',
-                password: 'any_password',
-                created_at: new Date(),
-            };
-
-            return new Promise(resolve => resolve(user));
-        }
-    }
-
-    return new UsersRepositoryStub();
-};
-
-const makeBcryptProviderStub = (): IEncryptProvider => {
-    class BcryptProviderStub implements IEncryptProvider {
-        hash(password: string, hashSalt: number): Promise<string> {
-            return new Promise(resolve => resolve('any_password_hashed'));
-        }
-
-        compare(password: string, password_hash: string): Promise<boolean> {
-            throw new Error('Method not implemented.');
-        }
-    }
-
-    return new BcryptProviderStub();
-};
+import {
+    makeBcryptProviderStub,
+    makeUsersRepositoryStub,
+} from '../../__mocks__/users-repository-mocks';
 
 interface ISutTypes {
     usersRepositoryStub: IUsersRepository;
