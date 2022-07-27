@@ -1,3 +1,4 @@
+import { sign } from 'jsonwebtoken';
 import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
 import {
     IAuthenticationUserRequestDTO,
@@ -16,6 +17,7 @@ class AuthenticationUserUseCase {
     ): Promise<IAuthenticationUserResponseDTO> {
         const { email, password } = data;
         const requiredFields = ['email', 'password'];
+        const tokenSecret = 'any_secret_token';
 
         for (const field of requiredFields) {
             if (!data[field]) {
@@ -38,13 +40,19 @@ class AuthenticationUserUseCase {
             throw new Error('Email or password invalid!');
         }
 
+        const { id, name } = user;
+
+        const token = sign({}, tokenSecret, {
+            subject: id,
+        });
+
         return {
             user: {
-                id: 'any_id',
-                name: 'any_name',
+                id,
+                name,
                 email,
             },
-            token: 'any_token',
+            token,
         };
     }
 }
