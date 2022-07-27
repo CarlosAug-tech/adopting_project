@@ -1,6 +1,7 @@
 import { IUsersRepository } from '@application/modules/accounts/repositories/users-repository';
 import { AuthenticationUserUseCase } from '@application/modules/accounts/usecases/authentication/authentication-user-usecase';
 import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
+import { AppError } from '@infra/shared/utils/app-error';
 import {
     makeBcryptProviderStub,
     makeUsersRepositoryStub,
@@ -35,7 +36,9 @@ describe('Authentication User UseCase', () => {
             password: 'any_password',
         };
 
-        await expect(sut.execute(credentials)).rejects.toThrow();
+        await expect(sut.execute(credentials)).rejects.toEqual(
+            new AppError('This field is required!'),
+        );
     });
 
     it('should not be able to authenticate a user, if password is not provided', async () => {
@@ -45,7 +48,9 @@ describe('Authentication User UseCase', () => {
             password: '',
         };
 
-        await expect(sut.execute(credentials)).rejects.toThrow();
+        await expect(sut.execute(credentials)).rejects.toEqual(
+            new AppError('This field is required!'),
+        );
     });
 
     it('should not be able to authenticate user, if email is not exists', async () => {
@@ -58,7 +63,9 @@ describe('Authentication User UseCase', () => {
             password: 'any_password',
         };
 
-        await expect(sut.execute(credentials)).rejects.toThrow();
+        await expect(sut.execute(credentials)).rejects.toEqual(
+            new AppError('Email or password invalid!'),
+        );
     });
 
     it('should not be able to authenticate a user, if password is invalid', async () => {
@@ -72,7 +79,9 @@ describe('Authentication User UseCase', () => {
             password: 'any_password_invalid',
         };
 
-        await expect(sut.execute(credentials)).rejects.toThrow();
+        await expect(sut.execute(credentials)).rejects.toEqual(
+            new AppError('Email or password invalid!'),
+        );
     });
 
     it('should be able to authenticate a user', async () => {
