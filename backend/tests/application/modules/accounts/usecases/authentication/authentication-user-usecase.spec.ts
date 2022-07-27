@@ -43,14 +43,30 @@ const makeBcryptProviderStub = (): IEncryptProvider => {
     return new BcryptProviderStub();
 };
 
+interface ISutTypes {
+    usersRepositoryStub: IUsersRepository;
+    bcryptProviderStub: IEncryptProvider;
+    sut: AuthenticationUserUseCase;
+}
+
+const makeSut = (): ISutTypes => {
+    const usersRepositoryStub = makeUsersRepositoryStub();
+    const bcryptProviderStub = makeBcryptProviderStub();
+    const sut = new AuthenticationUserUseCase(
+        usersRepositoryStub,
+        bcryptProviderStub,
+    );
+
+    return {
+        sut,
+        usersRepositoryStub,
+        bcryptProviderStub,
+    };
+};
+
 describe('Authentication User UseCase', () => {
     it('should not be able to authenticate a user, if email is not provided', async () => {
-        const usersRepositoryStub = makeUsersRepositoryStub();
-        const bcryptProviderStub = makeBcryptProviderStub();
-        const sut = new AuthenticationUserUseCase(
-            usersRepositoryStub,
-            bcryptProviderStub,
-        );
+        const { sut } = makeSut();
         const credentials = {
             email: '',
             password: 'any_password',
@@ -60,12 +76,7 @@ describe('Authentication User UseCase', () => {
     });
 
     it('should not be able to authenticate a user, if password is not provided', async () => {
-        const usersRepositoryStub = makeUsersRepositoryStub();
-        const bcryptProviderStub = makeBcryptProviderStub();
-        const sut = new AuthenticationUserUseCase(
-            usersRepositoryStub,
-            bcryptProviderStub,
-        );
+        const { sut } = makeSut();
         const credentials = {
             email: 'any_email@email.com',
             password: '',
@@ -75,12 +86,7 @@ describe('Authentication User UseCase', () => {
     });
 
     it('should not be able to authenticate user, if email is not exists', async () => {
-        const usersRepositoryStub = makeUsersRepositoryStub();
-        const bcryptProviderStub = makeBcryptProviderStub();
-        const sut = new AuthenticationUserUseCase(
-            usersRepositoryStub,
-            bcryptProviderStub,
-        );
+        const { sut, usersRepositoryStub } = makeSut();
         jest.spyOn(usersRepositoryStub, 'findByEmail').mockReturnValueOnce(
             undefined,
         );
@@ -112,12 +118,7 @@ describe('Authentication User UseCase', () => {
     });
 
     it('should be able to authenticate a user', async () => {
-        const usersRepositoryStub = makeUsersRepositoryStub();
-        const bcryptProviderStub = makeBcryptProviderStub();
-        const sut = new AuthenticationUserUseCase(
-            usersRepositoryStub,
-            bcryptProviderStub,
-        );
+        const { sut } = makeSut();
         const credentials = {
             email: 'any_email@email.com',
             password: 'any_password',
