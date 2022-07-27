@@ -4,6 +4,7 @@ import {
 } from '@application/modules/accounts/dtos/create-user-dtos';
 import { IUsersRepository } from '@application/modules/accounts/repositories/users-repository';
 import { CreateUserUseCase } from '@application/modules/accounts/usecases/create-user/create-user-usecase';
+import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
 import { IUser } from '@domain/entities/user';
 
 const makeUsersRepositoryStub = (): IUsersRepository => {
@@ -36,18 +37,31 @@ const makeUsersRepositoryStub = (): IUsersRepository => {
     return new UsersRepositoryStub();
 };
 
+const makeBcryptProviderStub = (): IEncryptProvider => {
+    class BcryptProviderStub implements IEncryptProvider {
+        hash(password: string, hashSalt: number): Promise<string> {
+            return new Promise(resolve => resolve('any_password_hashed'));
+        }
+    }
+
+    return new BcryptProviderStub();
+};
+
 interface ISutTypes {
     usersRepositoryStub: IUsersRepository;
+    bcryptProviderStub: IEncryptProvider;
     sut: CreateUserUseCase;
 }
 
 const makeSut = (): ISutTypes => {
     const usersRepositoryStub = makeUsersRepositoryStub();
-    const sut = new CreateUserUseCase(usersRepositoryStub);
+    const bcryptProviderStub = makeBcryptProviderStub();
+    const sut = new CreateUserUseCase(usersRepositoryStub, bcryptProviderStub);
 
     return {
         sut,
         usersRepositoryStub,
+        bcryptProviderStub,
     };
 };
 
