@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { sign } from 'jsonwebtoken';
 import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
 import { inject, injectable } from 'tsyringe';
