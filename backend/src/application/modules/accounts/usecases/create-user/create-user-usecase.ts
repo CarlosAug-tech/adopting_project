@@ -33,6 +33,10 @@ class CreateUserUseCase {
             throw new Error('User already exists');
         }
 
+        if (password !== confirmPassword) {
+            throw new Error('Passwords does not match!');
+        }
+
         const { id, created_at } = await this.usersRepository.create({
             name,
             email,
