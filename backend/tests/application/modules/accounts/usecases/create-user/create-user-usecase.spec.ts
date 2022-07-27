@@ -42,6 +42,10 @@ const makeBcryptProviderStub = (): IEncryptProvider => {
         hash(password: string, hashSalt: number): Promise<string> {
             return new Promise(resolve => resolve('any_password_hashed'));
         }
+
+        compare(password: string, password_hash: string): Promise<boolean> {
+            throw new Error('Method not implemented.');
+        }
     }
 
     return new BcryptProviderStub();
