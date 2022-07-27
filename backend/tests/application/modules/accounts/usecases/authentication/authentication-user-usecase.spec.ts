@@ -11,6 +11,16 @@ describe('Authentication User UseCase', () => {
         await expect(sut.execute(credentials)).rejects.toThrow();
     });
 
+    it('should not be able to authenticate a user, if password is not provided', async () => {
+        const sut = new AuthenticationUserUseCase();
+        const credentials = {
+            email: 'any_email@email.com',
+            password: '',
+        };
+
+        await expect(sut.execute(credentials)).rejects.toThrow();
+    });
+
     it('should be able to authenticate a user', async () => {
         const sut = new AuthenticationUserUseCase();
         const credentials = {
