@@ -29,6 +29,7 @@
         "no-unused-vars": "off",
         "no-empty-function": "off",
         "camelcase": "off",
-        "no-promise-executor-return": "off"
+        "no-promise-executor-return": "off",
+        "max-classes-per-file": "off"
     }
 }

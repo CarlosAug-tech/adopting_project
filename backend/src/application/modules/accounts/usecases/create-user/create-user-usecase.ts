@@ -1,3 +1,4 @@
+import { IEncryptProvider } from '@application/providers/contracts/encrypt-provider';
 import 'reflect-metadata';
 import { inject, injectable } from 'tsyringe';
 import {
@@ -15,11 +16,14 @@ class CreateUserUseCase {
     constructor(
         @inject('UsersRepository')
         private usersRepository: IUsersRepository,
+        @inject('BcryptProvider')
+        private bcryptProvider: IEncryptProvider,
     ) {}
 
     async execute(data: IRequest): Promise<ICreateUserResponseDTO> {
         const { name, email, password, confirmPassword } = data;
         const requiredFields = ['name', 'email', 'password', 'confirmPassword'];
+        const hashSalt = 12;
 
         for (const field of requiredFields) {
             if (!data[field]) {
@@ -37,10 +41,12 @@ class CreateUserUseCase {
             throw new Error('Passwords does not match!');
         }
 
+        const passwordHash = await this.bcryptProvider.hash(password, hashSalt);
+
         const { id, created_at } = await this.usersRepository.create({
             name,
             email,
-            password,
+            password: passwordHash,
         });
 
         return {
