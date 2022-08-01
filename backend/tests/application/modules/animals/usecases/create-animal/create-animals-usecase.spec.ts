@@ -8,6 +8,7 @@ describe('Create Animal UseCase', () => {
             name: '',
             description: 'any_descrption',
             breed_id: 'any_id',
+            sex: 'any_sex',
             isPuppy: false,
             isAdopt: false,
         };
@@ -23,6 +24,7 @@ describe('Create Animal UseCase', () => {
             name: 'any_name',
             description: '',
             breed_id: 'any_id',
+            sex: 'any_sex',
             isPuppy: false,
             isAdopt: false,
         };
@@ -38,6 +40,7 @@ describe('Create Animal UseCase', () => {
             name: 'any_name',
             description: 'any_descirption',
             breed_id: '',
+            sex: 'any_sex',
             isPuppy: false,
             isAdopt: false,
         };
@@ -53,6 +56,7 @@ describe('Create Animal UseCase', () => {
             name: 'any_name',
             description: 'any_descirption',
             breed_id: 'any_breed',
+            sex: 'any_sex',
             isPuppy: false,
             isAdopt: true,
         };
