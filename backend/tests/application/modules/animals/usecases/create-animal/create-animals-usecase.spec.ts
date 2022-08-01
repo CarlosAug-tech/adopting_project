@@ -50,6 +50,22 @@ describe('Create Animal UseCase', () => {
         );
     });
 
+    it('should not be able to create a animal, if sex is not provided', async () => {
+        const sut = new CreateAnimalUseCase();
+        const animal = {
+            name: 'any_name',
+            description: 'any_descirption',
+            breed_id: 'any_bredd',
+            sex: '',
+            isPuppy: false,
+            isAdopt: false,
+        };
+
+        await expect(sut.execute(animal)).rejects.toEqual(
+            new AppError('This field is required!'),
+        );
+    });
+
     it('should not be able to register a animal already adopting', async () => {
         const sut = new CreateAnimalUseCase();
         const animal = {
