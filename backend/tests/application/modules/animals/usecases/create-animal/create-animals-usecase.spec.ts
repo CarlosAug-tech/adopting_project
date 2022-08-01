@@ -1,9 +1,19 @@
 import { CreateAnimalUseCase } from '@application/modules/animals/usecases/create-animal/create-animal-usecase';
 import { AppError } from '@infra/shared/utils/app-error';
 
+interface ISutTypes {
+    sut: CreateAnimalUseCase;
+}
+
+const makeSut = (): ISutTypes => {
+    const sut = new CreateAnimalUseCase();
+
+    return { sut };
+};
+
 describe('Create Animal UseCase', () => {
     it('should not be able to create a animal, if name is not provided', async () => {
-        const sut = new CreateAnimalUseCase();
+        const { sut } = makeSut();
         const animal = {
             name: '',
             description: 'any_descrption',
@@ -19,7 +29,7 @@ describe('Create Animal UseCase', () => {
     });
 
     it('should not be able to create a animal, if description is not provided', async () => {
-        const sut = new CreateAnimalUseCase();
+        const { sut } = makeSut();
         const animal = {
             name: 'any_name',
             description: '',
@@ -35,7 +45,7 @@ describe('Create Animal UseCase', () => {
     });
 
     it('should not be able to create a animal, if breed is not provided', async () => {
-        const sut = new CreateAnimalUseCase();
+        const { sut } = makeSut();
         const animal = {
             name: 'any_name',
             description: 'any_descirption',
@@ -51,7 +61,7 @@ describe('Create Animal UseCase', () => {
     });
 
     it('should not be able to create a animal, if sex is not provided', async () => {
-        const sut = new CreateAnimalUseCase();
+        const { sut } = makeSut();
         const animal = {
             name: 'any_name',
             description: 'any_descirption',
@@ -67,7 +77,7 @@ describe('Create Animal UseCase', () => {
     });
 
     it('should not be able to register a animal already adopting', async () => {
-        const sut = new CreateAnimalUseCase();
+        const { sut } = makeSut();
         const animal = {
             name: 'any_name',
             description: 'any_descirption',
