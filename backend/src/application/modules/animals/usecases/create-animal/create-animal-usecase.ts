@@ -1,17 +1,29 @@
 import { UseCase } from '@application/contracts/usecase';
 import { AppError } from '@infra/shared/utils/app-error';
 import { ICreateAnimalRequestDTO } from '../../dtos/create-animal-dtos';
+import { IAnimalsRepository } from '../../repositories/animals-repository';
 
 class CreateAnimalUseCase extends UseCase<ICreateAnimalRequestDTO> {
-    constructor() {
+    constructor(private animalsRepository: IAnimalsRepository) {
         super();
     }
 
     async perform(data: ICreateAnimalRequestDTO): Promise<any> {
-        const { isAdopt } = data;
+        const { name, breed_id, isAdopt } = data;
 
         if (isAdopt) {
             throw new AppError('Does not register a animal already adopting');
+        }
+
+        const animalExists = await this.animalsRepository.findByNameAndBreed(
+            name,
+            breed_id,
+        );
+
+        if (animalExists) {
+            throw new AppError(
+                'This animal already register, change name please!',
+            );
         }
     }
 
