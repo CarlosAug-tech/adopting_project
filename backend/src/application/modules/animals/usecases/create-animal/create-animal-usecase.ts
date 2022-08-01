@@ -16,7 +16,7 @@ class CreateAnimalUseCase extends UseCase<ICreateAnimalRequestDTO> {
     }
 
     async execute(data: ICreateAnimalRequestDTO): Promise<any> {
-        const requiredFields = ['name', 'description', 'breed_id'];
+        const requiredFields = ['name', 'description', 'breed_id', 'sex'];
 
         this.validateRequiredFields(data, requiredFields);
 
