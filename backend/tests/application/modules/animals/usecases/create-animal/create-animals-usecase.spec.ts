@@ -46,4 +46,19 @@ describe('Create Animal UseCase', () => {
             new AppError('This field is required!'),
         );
     });
+
+    it('should not be able to register a animal already adopting', async () => {
+        const sut = new CreateAnimalUseCase();
+        const animal = {
+            name: 'any_name',
+            description: 'any_descirption',
+            breed_id: 'any_breed',
+            isPuppy: false,
+            isAdopt: true,
+        };
+
+        await expect(sut.execute(animal)).rejects.toEqual(
+            new AppError('Does not register a animal already adopting'),
+        );
+    });
 });
