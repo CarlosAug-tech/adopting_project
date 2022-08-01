@@ -1,12 +1,36 @@
+import { IAnimalsRepository } from '@application/modules/animals/repositories/animals-repository';
 import { CreateAnimalUseCase } from '@application/modules/animals/usecases/create-animal/create-animal-usecase';
+import { IAnimal } from '@domain/entities/animal';
 import { AppError } from '@infra/shared/utils/app-error';
+
+const makeAnimalsRepositoryStub = (): IAnimalsRepository => {
+    class AnimalsRepositoryStub implements IAnimalsRepository {
+        findByNameAndBreed(name: string, breed_id: string): Promise<IAnimal> {
+            const animal = {
+                id: 'any_id',
+                name: 'any_name',
+                description: 'any_descirption',
+                breed_id: 'any_breed',
+                sex: 'any_sex',
+                isPuppy: false,
+                isAdopt: false,
+                created_at: new Date(),
+            };
+
+            return new Promise(resolve => resolve(animal));
+        }
+    }
+
+    return new AnimalsRepositoryStub();
+};
 
 interface ISutTypes {
     sut: CreateAnimalUseCase;
 }
 
 const makeSut = (): ISutTypes => {
-    const sut = new CreateAnimalUseCase();
+    const animalsRepositoryStub = makeAnimalsRepositoryStub();
+    const sut = new CreateAnimalUseCase(animalsRepositoryStub);
 
     return { sut };
 };
@@ -89,6 +113,22 @@ describe('Create Animal UseCase', () => {
 
         await expect(sut.execute(animal)).rejects.toEqual(
             new AppError('Does not register a animal already adopting'),
+        );
+    });
+
+    it('should not be able to create a animal, if the animal already register', async () => {
+        const { sut } = makeSut();
+        const animal = {
+            name: 'any_name',
+            description: 'any_descirption',
+            breed_id: 'any_breed',
+            sex: 'any_sex',
+            isPuppy: false,
+            isAdopt: false,
+        };
+
+        await expect(sut.execute(animal)).rejects.toEqual(
+            new AppError('This animal already register, change name please!'),
         );
     });
 });
