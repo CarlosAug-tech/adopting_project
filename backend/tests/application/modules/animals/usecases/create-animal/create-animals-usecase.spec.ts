@@ -1,3 +1,4 @@
+import { ICreateAnimalRequestDTO } from '@application/modules/animals/dtos/create-animal-dtos';
 import { IAnimalsRepository } from '@application/modules/animals/repositories/animals-repository';
 import { CreateAnimalUseCase } from '@application/modules/animals/usecases/create-animal/create-animal-usecase';
 import { IAnimal } from '@domain/entities/animal';
@@ -5,6 +6,21 @@ import { AppError } from '@infra/shared/utils/app-error';
 
 const makeAnimalsRepositoryStub = (): IAnimalsRepository => {
     class AnimalsRepositoryStub implements IAnimalsRepository {
+        create(data: ICreateAnimalRequestDTO): Promise<IAnimal> {
+            const animal = {
+                id: 'any_id',
+                name: 'any_name',
+                description: 'any_descirption',
+                breed_id: 'any_breed',
+                sex: 'any_sex',
+                isPuppy: false,
+                isAdopt: false,
+                created_at: new Date(),
+            };
+
+            return new Promise(resolve => resolve(animal));
+        }
+
         findByNameAndBreed(name: string, breed_id: string): Promise<IAnimal> {
             const animal = {
                 id: 'any_id',
@@ -25,6 +41,7 @@ const makeAnimalsRepositoryStub = (): IAnimalsRepository => {
 };
 
 interface ISutTypes {
+    animalsRepositoryStub: IAnimalsRepository;
     sut: CreateAnimalUseCase;
 }
 
@@ -32,7 +49,7 @@ const makeSut = (): ISutTypes => {
     const animalsRepositoryStub = makeAnimalsRepositoryStub();
     const sut = new CreateAnimalUseCase(animalsRepositoryStub);
 
-    return { sut };
+    return { sut, animalsRepositoryStub };
 };
 
 describe('Create Animal UseCase', () => {
@@ -130,5 +147,26 @@ describe('Create Animal UseCase', () => {
         await expect(sut.execute(animal)).rejects.toEqual(
             new AppError('This animal already register, change name please!'),
         );
+    });
+
+    it('should be able to create a new Animalfor adopting', async () => {
+        const { sut, animalsRepositoryStub } = makeSut();
+        jest.spyOn(
+            animalsRepositoryStub,
+            'findByNameAndBreed',
+        ).mockReturnValueOnce(undefined);
+
+        const animal = {
+            name: 'any_name',
+            description: 'any_descirption',
+            breed_id: 'any_breed',
+            sex: 'any_sex',
+            isPuppy: false,
+            isAdopt: false,
+        };
+
+        const newAnimal = await sut.execute(animal);
+
+        expect(newAnimal).toHaveProperty('id');
     });
 });
