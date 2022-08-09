@@ -14,7 +14,8 @@ class CreateAnimalUseCase extends UseCase<ICreateAnimalRequestDTO, IAnimal> {
     }
 
     async perform(data: ICreateAnimalRequestDTO): Promise<IAnimal> {
-        const { name, description, breed_id, sex, isPuppy, isAdopt } = data;
+        const { name, description, breed_id, type_id, sex, isPuppy, isAdopt } =
+            data;
 
         if (isAdopt) {
             throw new AppError('Does not register a animal already adopting');
@@ -41,6 +42,7 @@ class CreateAnimalUseCase extends UseCase<ICreateAnimalRequestDTO, IAnimal> {
             name,
             description,
             breed_id,
+            type_id,
             sex,
             isPuppy,
             isAdopt,
@@ -50,7 +52,13 @@ class CreateAnimalUseCase extends UseCase<ICreateAnimalRequestDTO, IAnimal> {
     }
 
     async execute(data: ICreateAnimalRequestDTO): Promise<IAnimal> {
-        const requiredFields = ['name', 'description', 'breed_id', 'sex'];
+        const requiredFields = [
+            'name',
+            'description',
+            'breed_id',
+            'type_id',
+            'sex',
+        ];
 
         this.validateRequiredFields(data, requiredFields);
 
