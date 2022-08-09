@@ -1,7 +1,9 @@
 import { ICreateAnimalRequestDTO } from '@application/modules/animals/dtos/create-animal-dtos';
 import { IAnimalsRepository } from '@application/modules/animals/repositories/animals-repository';
+import { IBreedsRepository } from '@application/modules/animals/repositories/breeds-repository';
 import { CreateAnimalUseCase } from '@application/modules/animals/usecases/create-animal/create-animal-usecase';
 import { IAnimal } from '@domain/entities/animal';
+import { IBreed } from '@domain/entities/breed';
 import { AppError } from '@infra/shared/utils/app-error';
 
 const makeAnimalsRepositoryStub = (): IAnimalsRepository => {
@@ -40,16 +42,38 @@ const makeAnimalsRepositoryStub = (): IAnimalsRepository => {
     return new AnimalsRepositoryStub();
 };
 
+const makeBreedsRepositoryStub = (): IBreedsRepository => {
+    class BreedsRepositoryStub implements IBreedsRepository {
+        async findById(id: string): Promise<IBreed> {
+            const breed = {
+                id: 'any_id',
+                name: 'any_name',
+                description: 'any_description',
+                created_at: new Date(),
+            };
+
+            return new Promise(resolve => resolve(breed));
+        }
+    }
+
+    return new BreedsRepositoryStub();
+};
+
 interface ISutTypes {
     animalsRepositoryStub: IAnimalsRepository;
+    breedsRepositoryStub: IBreedsRepository;
     sut: CreateAnimalUseCase;
 }
 
 const makeSut = (): ISutTypes => {
     const animalsRepositoryStub = makeAnimalsRepositoryStub();
-    const sut = new CreateAnimalUseCase(animalsRepositoryStub);
+    const breedsRepositoryStub = makeBreedsRepositoryStub();
+    const sut = new CreateAnimalUseCase(
+        animalsRepositoryStub,
+        breedsRepositoryStub,
+    );
 
-    return { sut, animalsRepositoryStub };
+    return { sut, animalsRepositoryStub, breedsRepositoryStub };
 };
 
 describe('Create Animal UseCase', () => {
@@ -146,6 +170,25 @@ describe('Create Animal UseCase', () => {
 
         await expect(sut.execute(animal)).rejects.toEqual(
             new AppError('This animal already register, change name please!'),
+        );
+    });
+
+    it('should not be able to create a animal, if the breed is not exists', async () => {
+        const { sut, breedsRepositoryStub } = makeSut();
+        jest.spyOn(breedsRepositoryStub, 'findById').mockReturnValueOnce(
+            undefined,
+        );
+        const animal = {
+            name: 'any_name',
+            description: 'any_descirption',
+            breed_id: 'any_breed_invalid',
+            sex: 'any_sex',
+            isPuppy: false,
+            isAdopt: false,
+        };
+
+        await expect(sut.execute(animal)).rejects.toEqual(
+            new AppError('This breed is not exists, set other breed!'),
         );
     });
 
