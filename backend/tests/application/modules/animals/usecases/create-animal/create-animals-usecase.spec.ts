@@ -14,6 +14,7 @@ const makeAnimalsRepositoryStub = (): IAnimalsRepository => {
                 name: 'any_name',
                 description: 'any_descirption',
                 breed_id: 'any_breed',
+                type_id: 'any_type',
                 sex: 'any_sex',
                 isPuppy: false,
                 isAdopt: false,
@@ -29,6 +30,7 @@ const makeAnimalsRepositoryStub = (): IAnimalsRepository => {
                 name: 'any_name',
                 description: 'any_descirption',
                 breed_id: 'any_breed',
+                type_id: 'any_type',
                 sex: 'any_sex',
                 isPuppy: false,
                 isAdopt: false,
@@ -83,6 +85,7 @@ describe('Create Animal UseCase', () => {
             name: '',
             description: 'any_descrption',
             breed_id: 'any_id',
+            type_id: 'any_type',
             sex: 'any_sex',
             isPuppy: false,
             isAdopt: false,
@@ -99,6 +102,7 @@ describe('Create Animal UseCase', () => {
             name: 'any_name',
             description: '',
             breed_id: 'any_id',
+            type_id: 'any_type',
             sex: 'any_sex',
             isPuppy: false,
             isAdopt: false,
@@ -115,6 +119,7 @@ describe('Create Animal UseCase', () => {
             name: 'any_name',
             description: 'any_descirption',
             breed_id: '',
+            type_id: 'any_type',
             sex: 'any_sex',
             isPuppy: false,
             isAdopt: false,
@@ -131,7 +136,25 @@ describe('Create Animal UseCase', () => {
             name: 'any_name',
             description: 'any_descirption',
             breed_id: 'any_bredd',
+            type_id: 'any_type',
             sex: '',
+            isPuppy: false,
+            isAdopt: false,
+        };
+
+        await expect(sut.execute(animal)).rejects.toEqual(
+            new AppError('This field is required!'),
+        );
+    });
+
+    it('should not be able to create a animal, if type is not provided', async () => {
+        const { sut } = makeSut();
+        const animal = {
+            name: 'any_name',
+            description: 'any_descirption',
+            breed_id: 'any_bredd',
+            type_id: '',
+            sex: 'any_sex',
             isPuppy: false,
             isAdopt: false,
         };
@@ -147,6 +170,7 @@ describe('Create Animal UseCase', () => {
             name: 'any_name',
             description: 'any_descirption',
             breed_id: 'any_breed',
+            type_id: 'any_type',
             sex: 'any_sex',
             isPuppy: false,
             isAdopt: true,
@@ -163,6 +187,7 @@ describe('Create Animal UseCase', () => {
             name: 'any_name',
             description: 'any_descirption',
             breed_id: 'any_breed',
+            type_id: 'any_type',
             sex: 'any_sex',
             isPuppy: false,
             isAdopt: false,
@@ -182,6 +207,7 @@ describe('Create Animal UseCase', () => {
             name: 'any_name',
             description: 'any_descirption',
             breed_id: 'any_breed_invalid',
+            type_id: 'any_type',
             sex: 'any_sex',
             isPuppy: false,
             isAdopt: false,
@@ -203,6 +229,7 @@ describe('Create Animal UseCase', () => {
             name: 'any_name',
             description: 'any_descirption',
             breed_id: 'any_breed',
+            type_id: 'any_type',
             sex: 'any_sex',
             isPuppy: false,
             isAdopt: false,
