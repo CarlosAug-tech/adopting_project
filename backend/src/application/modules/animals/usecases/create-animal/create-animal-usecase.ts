@@ -3,9 +3,13 @@ import { IAnimal } from '@domain/entities/animal';
 import { AppError } from '@infra/shared/utils/app-error';
 import { ICreateAnimalRequestDTO } from '../../dtos/create-animal-dtos';
 import { IAnimalsRepository } from '../../repositories/animals-repository';
+import { IBreedsRepository } from '../../repositories/breeds-repository';
 
 class CreateAnimalUseCase extends UseCase<ICreateAnimalRequestDTO, IAnimal> {
-    constructor(private animalsRepository: IAnimalsRepository) {
+    constructor(
+        private animalsRepository: IAnimalsRepository,
+        private breedsRepository: IBreedsRepository,
+    ) {
         super();
     }
 
@@ -14,6 +18,12 @@ class CreateAnimalUseCase extends UseCase<ICreateAnimalRequestDTO, IAnimal> {
 
         if (isAdopt) {
             throw new AppError('Does not register a animal already adopting');
+        }
+
+        const breedExists = await this.breedsRepository.findById(breed_id);
+
+        if (!breedExists) {
+            throw new AppError('This breed is not exists, set other breed!');
         }
 
         const animalExists = await this.animalsRepository.findByNameAndBreed(
