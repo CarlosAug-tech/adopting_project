@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import { inject, injectable } from 'tsyringe';
 import { UseCase } from '@application/contracts/usecase';
 import { IAnimal } from '@domain/entities/animal';
 import { AppError } from '@infra/shared/utils/app-error';
@@ -5,9 +7,12 @@ import { ICreateAnimalRequestDTO } from '../../dtos/create-animal-dtos';
 import { IAnimalsRepository } from '../../repositories/animals-repository';
 import { IBreedsRepository } from '../../repositories/breeds-repository';
 
+@injectable()
 class CreateAnimalUseCase extends UseCase<ICreateAnimalRequestDTO, IAnimal> {
     constructor(
+        @inject('AnimalsRepository')
         private animalsRepository: IAnimalsRepository,
+        @inject('BreedsRepository')
         private breedsRepository: IBreedsRepository,
     ) {
         super();
