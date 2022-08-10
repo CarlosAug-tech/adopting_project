@@ -1,10 +1,10 @@
+import { CreateAnimalController } from '@application/modules/animals/usecases/create-animal/create-animal-controller';
 import { Router } from 'express';
 import authenticationMiddleware from '../middlewares/authentication-middleware';
 
 const animalRoutes = Router();
+const createAnimalController = new CreateAnimalController();
 
-animalRoutes.post('/', authenticationMiddleware, (req, res) =>
-    res.status(201).json({ id: 'any_id' }),
-);
+animalRoutes.post('/', authenticationMiddleware, createAnimalController.handle);
 
 export { animalRoutes };
