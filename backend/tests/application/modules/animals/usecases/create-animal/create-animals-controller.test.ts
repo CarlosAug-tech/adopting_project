@@ -181,6 +181,32 @@ describe('Create animals controller', () => {
         );
     });
 
+    it('should not be able to create a new animal, if already exists a animal with breed and name already register', async () => {
+        await connection.query(`INSERT INTO ANIMALS(id, name, description, breed_id, type_id, sex, "isPuppy", "isAdopt", created_at)
+        values('${v4()}', 'name_already_register', 'any_description', '${idBreedGeneric}', '${idTypeGeneric}', 'any_sex', 'false', 'false',  'now()')
+        `);
+
+        const response = await request(app)
+            .post('/animals')
+            .send({
+                name: 'name_already_register',
+                description: 'any_description',
+                sex: 'any_sex',
+                breed_id: idBreedGeneric,
+                type_id: idTypeGeneric,
+                isPuppy: true,
+                isAdopt: false,
+            })
+            .set({
+                Authorization: `Bearer ${token}`,
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toEqual(
+            'This animal already register, change name please!',
+        );
+    });
+
     it('it should be able to create a new animal and return status 201(CREATED)', async () => {
         const response = await request(app)
             .post('/animals')
