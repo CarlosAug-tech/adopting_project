@@ -16,7 +16,7 @@ abstract class UseCase<TRequest = any, TResponse = any> {
         return this.perform();
     }
 
-    private validateRequiredFields(data: any, fields: string[]) {
+    protected validateRequiredFields(data: any, fields: string[]) {
         for (const field of fields) {
             if (!data[field]) {
                 throw new AppError('This field is required!');
