@@ -15,6 +15,14 @@ class BreedsRepository implements IBreedsRepository {
 
         return breed;
     }
+
+    async findByName(name: string): Promise<IBreed> {
+        const breed = await this.repository.findOne({
+            where: { name },
+        });
+
+        return breed;
+    }
 }
 
 export { BreedsRepository };
