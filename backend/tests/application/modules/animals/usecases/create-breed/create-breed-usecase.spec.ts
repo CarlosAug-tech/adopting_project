@@ -25,4 +25,16 @@ describe('Create Breed UseCase', () => {
             new AppError('This field is required!'),
         );
     });
+
+    it('should not be able to create a new Breed, if description field is not provided', async () => {
+        const { sut } = makeSut();
+        const breed = {
+            name: 'any_name',
+            description: '',
+        };
+
+        await expect(sut.execute(breed)).rejects.toEqual(
+            new AppError('This field is required!'),
+        );
+    });
 });
