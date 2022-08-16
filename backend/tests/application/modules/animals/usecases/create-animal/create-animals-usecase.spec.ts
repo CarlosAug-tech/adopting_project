@@ -1,4 +1,5 @@
 import { ICreateAnimalRequestDTO } from '@application/modules/animals/dtos/create-animal-dtos';
+import { ICreateBreedRequestDTO } from '@application/modules/animals/dtos/create-breed-dtos';
 import { IAnimalsRepository } from '@application/modules/animals/repositories/animals-repository';
 import { IBreedsRepository } from '@application/modules/animals/repositories/breeds-repository';
 import { CreateAnimalUseCase } from '@application/modules/animals/usecases/create-animal/create-animal-usecase';
@@ -46,6 +47,10 @@ const makeAnimalsRepositoryStub = (): IAnimalsRepository => {
 
 const makeBreedsRepositoryStub = (): IBreedsRepository => {
     class BreedsRepositoryStub implements IBreedsRepository {
+        create(data: ICreateBreedRequestDTO): Promise<IBreed> {
+            throw new Error('Method not implemented.');
+        }
+
         async findById(id: string): Promise<IBreed> {
             const breed = {
                 id: 'any_id',
@@ -55,6 +60,10 @@ const makeBreedsRepositoryStub = (): IBreedsRepository => {
             };
 
             return new Promise(resolve => resolve(breed));
+        }
+
+        findByName(name: string): Promise<IBreed> {
+            throw new Error('Method not implemented.');
         }
     }
 
