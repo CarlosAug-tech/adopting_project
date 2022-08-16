@@ -1,4 +1,5 @@
 import { UseCase } from '@application/contracts/usecase';
+import { IBreed } from '@domain/entities/breed';
 import { AppError } from '@infra/shared/utils/app-error';
 import { ICreateBreedRequestDTO } from '../../dtos/create-breed-dtos';
 import { IBreedsRepository } from '../../repositories/breeds-repository';
@@ -8,7 +9,7 @@ class CreateBreedUseCase extends UseCase<ICreateBreedRequestDTO> {
         super();
     }
 
-    async perform(data?: ICreateBreedRequestDTO): Promise<any> {
+    async perform(data?: ICreateBreedRequestDTO): Promise<IBreed> {
         const { name, description } = data;
 
         const breedExists = await this.breedsRepository.findByName(name);
@@ -17,7 +18,12 @@ class CreateBreedUseCase extends UseCase<ICreateBreedRequestDTO> {
             throw new AppError('This breed already exists');
         }
 
-        return '';
+        const breed = await this.breedsRepository.create({
+            name,
+            description,
+        });
+
+        return breed;
     }
 }
 
