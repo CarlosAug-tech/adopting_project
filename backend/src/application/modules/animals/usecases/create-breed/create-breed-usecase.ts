@@ -1,11 +1,17 @@
+import 'reflect-metadata';
+import { inject, injectable } from 'tsyringe';
 import { UseCase } from '@application/contracts/usecase';
 import { IBreed } from '@domain/entities/breed';
 import { AppError } from '@infra/shared/utils/app-error';
 import { ICreateBreedRequestDTO } from '../../dtos/create-breed-dtos';
 import { IBreedsRepository } from '../../repositories/breeds-repository';
 
+@injectable()
 class CreateBreedUseCase extends UseCase<ICreateBreedRequestDTO> {
-    constructor(private breedsRepository: IBreedsRepository) {
+    constructor(
+        @inject('BreedsRepository')
+        private breedsRepository: IBreedsRepository,
+    ) {
         super();
     }
 
