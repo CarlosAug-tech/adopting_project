@@ -37,4 +37,19 @@ describe('Create Breed Controller', () => {
         expect(response.status).toBe(400);
         expect(response.body.message).toBe('This field is required!');
     });
+
+    it('should not be able to create a new Breed, if name field is not provided and return status 400 (BADREQUEST)', async () => {
+        const response = await request(app)
+            .post('/breeds')
+            .send({
+                name: 'any_name',
+                description: '',
+            })
+            .set({
+                Authorization: `Bearer ${token}`,
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe('This field is required!');
+    });
 });
