@@ -72,4 +72,19 @@ describe('Create Breed Controller', () => {
         expect(response.status).toBe(400);
         expect(response.body.message).toBe('This breed already exists');
     });
+
+    it('should be able to create a new Breed and return status 201 (CREATED)', async () => {
+        const response = await request(app)
+            .post('/breeds')
+            .send({
+                name: 'any_name',
+                description: 'any_description',
+            })
+            .set({
+                Authorization: `Bearer ${token}`,
+            });
+
+        expect(response.status).toBe(201);
+        expect(response.body).toHaveProperty('id');
+    });
 });
