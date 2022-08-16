@@ -38,7 +38,7 @@ describe('Create Breed Controller', () => {
         expect(response.body.message).toBe('This field is required!');
     });
 
-    it('should not be able to create a new Breed, if name field is not provided and return status 400 (BADREQUEST)', async () => {
+    it('should not be able to create a new Breed, if description field is not provided and return status 400 (BADREQUEST)', async () => {
         const response = await request(app)
             .post('/breeds')
             .send({
