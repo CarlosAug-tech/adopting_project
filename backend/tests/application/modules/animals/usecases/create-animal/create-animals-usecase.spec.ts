@@ -56,6 +56,10 @@ const makeBreedsRepositoryStub = (): IBreedsRepository => {
 
             return new Promise(resolve => resolve(breed));
         }
+
+        findByName(name: string): Promise<IBreed> {
+            throw new Error('Method not implemented.');
+        }
     }
 
     return new BreedsRepositoryStub();
