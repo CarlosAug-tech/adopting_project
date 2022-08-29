@@ -4,6 +4,7 @@ import { Connection } from 'typeorm';
 
 import { app } from '@infra/http/app';
 import createConnection from '@infra/database/typeorm';
+import { v4 } from 'uuid';
 
 let token: string;
 let connection: Connection;
@@ -28,6 +29,23 @@ describe('Create Type Controller', () => {
             .post('/types')
             .send({
                 name: '',
+            })
+            .set({
+                Authorization: `Bearer ${token}`,
+            });
+
+        expect(response.status).toBe(400);
+    });
+
+    it('should not be able to create a new type, if already exists a type with same name and return 400', async () => {
+        await connection.query(`INSERT INTO TYPES(id, name, created_at)
+        values('${v4()}', 'name_already_register', 'now()')
+        `);
+
+        const response = await request(app)
+            .post('/types')
+            .send({
+                name: 'name_already_register',
             })
             .set({
                 Authorization: `Bearer ${token}`,
