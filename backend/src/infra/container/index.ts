@@ -8,6 +8,8 @@ import { IAnimalsRepository } from '@application/modules/animals/repositories/an
 import { AnimalsRepository } from '@infra/database/typeorm/repositories/animals-repository';
 import { IBreedsRepository } from '@application/modules/animals/repositories/breeds-repository';
 import { BreedsRepository } from '@infra/database/typeorm/repositories/breeds-repository';
+import { ITypesRepository } from '@application/modules/animals/repositories/types-repository';
+import { TypesRepository } from '@infra/database/typeorm/repositories/types-repository';
 
 container.registerSingleton<IUsersRepository>(
     'UsersRepository',
@@ -22,4 +24,9 @@ container.registerSingleton<IAnimalsRepository>(
 container.registerSingleton<IBreedsRepository>(
     'BreedsRepository',
     BreedsRepository,
+);
+
+container.registerSingleton<ITypesRepository>(
+    'TypesRepository',
+    TypesRepository,
 );
