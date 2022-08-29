@@ -12,7 +12,7 @@ class CreateTypeController {
             name,
         });
 
-        return response.status(200).json(type);
+        return response.status(201).json(type);
     }
 }
 
