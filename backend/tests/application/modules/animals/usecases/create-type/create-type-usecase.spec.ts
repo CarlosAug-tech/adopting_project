@@ -1,3 +1,4 @@
+import { ICreateTypeRequestDTO } from '@application/modules/animals/dtos/create-type-dtos';
 import { ITypesRepository } from '@application/modules/animals/repositories/types-repository';
 import { CreateTypeUseCase } from '@application/modules/animals/usecases/create-type/create-type-usecase';
 import { IType } from '@domain/entities/type';
@@ -5,6 +6,16 @@ import { AppError } from '@infra/shared/utils/app-error';
 
 const makeTypesRepositoryStub = (): ITypesRepository => {
     class TypesRepositoryStub implements ITypesRepository {
+        create(data: ICreateTypeRequestDTO): Promise<IType> {
+            const type = {
+                id: 'any_id',
+                name: 'any_name',
+                created_at: new Date(),
+            };
+
+            return new Promise(resolve => resolve(type));
+        }
+
         findByName(name: string): Promise<IType> {
             const type = {
                 id: 'any_id',
@@ -55,5 +66,19 @@ describe('Create Type UseCase', () => {
         await expect(sut.execute(type)).rejects.toEqual(
             new AppError('This type already register'),
         );
+    });
+
+    it('should be able to create a new type', async () => {
+        const { sut, typesReposityStub } = makeSut();
+        jest.spyOn(typesReposityStub, 'findByName').mockReturnValueOnce(
+            undefined,
+        );
+        const type = {
+            name: 'any_name',
+        };
+
+        const newType = await sut.execute(type);
+
+        expect(newType).toHaveProperty('id');
     });
 });
