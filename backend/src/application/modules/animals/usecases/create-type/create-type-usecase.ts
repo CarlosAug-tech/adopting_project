@@ -1,10 +1,17 @@
+import 'reflect-metadata';
+import { inject, injectable } from 'tsyringe';
+
 import { UseCase } from '@application/contracts/usecase';
 import { AppError } from '@infra/shared/utils/app-error';
 import { ICreateTypeRequestDTO } from '../../dtos/create-type-dtos';
 import { ITypesRepository } from '../../repositories/types-repository';
 
+@injectable()
 class CreateTypeUseCase extends UseCase<ICreateTypeRequestDTO> {
-    constructor(private typesRepository: ITypesRepository) {
+    constructor(
+        @inject('TypesRepository')
+        private typesRepository: ITypesRepository,
+    ) {
         super();
     }
 
