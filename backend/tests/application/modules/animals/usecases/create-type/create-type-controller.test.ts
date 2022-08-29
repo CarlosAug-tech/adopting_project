@@ -53,4 +53,18 @@ describe('Create Type Controller', () => {
 
         expect(response.status).toBe(400);
     });
+
+    it('should be able to create a new type and return 201 (CREATED)', async () => {
+        const response = await request(app)
+            .post('/types')
+            .send({
+                name: 'any_name',
+            })
+            .set({
+                Authorization: `Bearer ${token}`,
+            });
+
+        expect(response.status).toBe(201);
+        expect(response.body).toHaveProperty('id');
+    });
 });
