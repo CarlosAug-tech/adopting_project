@@ -16,6 +16,10 @@ class CreateTypeUseCase extends UseCase<ICreateTypeRequestDTO> {
         if (typeExists) {
             throw new AppError('This type already register');
         }
+
+        const type = await this.typesRepository.create({ name });
+
+        return type;
     }
 }
 
