@@ -14,7 +14,7 @@ let idUserGeneric: string;
 const hashSalt: number = 12;
 
 const user: IAuthenticationUserRequestDTO = {
-    email: 'any_email@email.com',
+    email: 'any_email_auth@email.com',
     password: 'any_password',
 };
 
@@ -26,8 +26,8 @@ describe('Authentication User Controller', () => {
         idUserGeneric = v4();
         passwordUserGenericHash = await hash(user.password, hashSalt);
 
-        await connection.query(`INSERT INTO USERS(id, name, email, password, created_at)
-        values('${idUserGeneric}', 'any_name', '${user.email}', '${passwordUserGenericHash}', 'now()')
+        await connection.query(`INSERT INTO USERS(id, name, email, password, "isAdmin", created_at)
+        values('${idUserGeneric}', 'any_name', '${user.email}', '${passwordUserGenericHash}', false, 'now()')
         `);
     });
 
