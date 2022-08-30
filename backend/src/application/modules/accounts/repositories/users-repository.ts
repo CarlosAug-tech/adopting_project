@@ -7,6 +7,7 @@ import {
 interface IUsersRepository {
     create(data: ICreateUserRequestDTO): Promise<ICreateUserResponseDTO>;
     findByEmail(email: string): Promise<IUser>;
+    findById(id: string): Promise<IUser>;
 }
 
 export { IUsersRepository };

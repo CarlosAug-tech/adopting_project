@@ -26,6 +26,20 @@ const makeUsersRepositoryStub = (): IUsersRepository => {
                 name: 'any_name',
                 email: 'any_email@email.com',
                 password: 'any_password',
+                isAdmin: false,
+                created_at: new Date(),
+            };
+
+            return new Promise(resolve => resolve(user));
+        }
+
+        findById(id: string): Promise<IUser> {
+            const user = {
+                id: 'any_id',
+                name: 'any_name',
+                email: 'any_email@email.com',
+                password: 'any_password',
+                isAdmin: false,
                 created_at: new Date(),
             };
 

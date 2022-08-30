@@ -16,6 +16,9 @@ class User implements IUser {
     @Column()
     password: string;
 
+    @Column()
+    isAdmin: boolean;
+
     @CreateDateColumn()
     created_at: Date;
 
