@@ -7,15 +7,21 @@ import createConnection from '@infra/database/typeorm';
 import { v4 } from 'uuid';
 
 let token: string;
+let idGenericAdmin: string;
 let connection: Connection;
 
 describe('Create Type Controller', () => {
     beforeAll(async () => {
         connection = await createConnection();
         await connection.runMigrations();
+        idGenericAdmin = v4();
+
+        await connection.query(`INSERT INTO USERS(id, name, email, password, "isAdmin", created_at)
+    values('${idGenericAdmin}', 'any_admin_name', 'any_admin_type@email.com', 'any_password', true, 'now()')
+    `);
 
         token = sign({}, 'any_token_secret', {
-            subject: 'any_id',
+            subject: idGenericAdmin,
         });
     });
 
